@@ -2,12 +2,12 @@
     <div class="card col-6 border border-info rounded-lg col">
         
         <div class="card-body">
-            <img class="img-fluid card-img-top" v-bind:src="cat.pic">
+            <img class="img-fluid card-img-top" v-bind:src="cat.pic">  
             <p class="lead text-info text-center"><strong>{{ cat.name }}</strong></p>
-            <cat-comment :thiscat="cat"></cat-comment>
+            <cat-comment :cat="cat"></cat-comment>  
         </div>
         <div class="card-footer border justify-content-right">
-            <cat-vote :cat="cat" v-on:vote="setVote"></cat-vote>  
+            <cat-vote :cat="cat" v-on:vote="setVote"></cat-vote>   
         </div>
 
     </div>
@@ -17,6 +17,7 @@
 import CatComment from './CatComment.vue'
 import CatVote from './CatVote.vue'
 import { store } from '../store'
+import { Cats } from '../../lib/collections'
 export default {
     name: 'BeautyCat',
     props: {
@@ -27,13 +28,27 @@ export default {
     
     data(){
         return {
-            win: false
+            win: false,
+            //thisCat: {},
+            //cats: []
         }
+    },
+    meteor: {
+        $subscribe: {
+            //'this-cat': [],
+            'cats': []
+        },
+        cats() {
+            return Cats.find({})
+        },  
+        
     },
 
     computed: {
         cat(){
-            return this.$store.state.cats[this.currentCat]
+           // console.log( 'BEFORE CAT', this.cats)
+           return this.cats[this.currentCat]
+            
             
         }
 
@@ -49,7 +64,11 @@ export default {
             this.win = !this.win
             let indexW = this.currentCat
             this.$store.commit('updateTotal')
-            this.$store.commit('updateVote', this.currentCat)
+            let newVote = this.cat.votes
+            newVote++
+            console.log('THIS-CURRENTCAT BEFORE MONGO', this.currentCat, newVote)
+            Meteor.call('updateVotes', this.currentCat, newVote)
+            //this.$store.commit('updateVote', this.currentCat)
         }
         
     },
