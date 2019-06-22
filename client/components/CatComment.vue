@@ -20,6 +20,16 @@ export default {
         cat: Object
     },
     store,
+    data(){
+        return {
+            //coms: []
+        }
+    },
+    computed: {
+        coms(){
+            return this.cat.comments
+        }
+    },
     methods: {
         setComment(event) {
             let comment = this.$refs.inputComment.value
@@ -29,12 +39,15 @@ export default {
             //com.comment = comment
             //console.log(com)
             let id = this.cat.id 
-            Meteor.call('insertComment', comment, id)
+            
+            this.coms.push(comment)
+            console.log(this.coms)
+            Meteor.call('insertComment', this.coms, id)
             //this.$store.commit('addComment', com)
             //console.log('COMMIT COMMENT', com)
             this.$refs.inputComment.value = ''
         }
-        
+       
     }
     
 }
