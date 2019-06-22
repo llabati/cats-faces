@@ -6,29 +6,33 @@
                 <button class="btn btn-outline-secondary" v-on:click="setComment">Postez</button>
             </div>
         </div>
-        <router-link class="my-3" style="text-decoration: none; cursor: pointer;" v-bind:to="{ name: 'cat', params: { id: thiscat.id }}">Les commentaires sur {{ thiscat.name }}, c'est par là.</router-link>
+        <router-link class="my-3" style="text-decoration: none; cursor: pointer;" v-bind:to="{ name: 'cat', params: { id: cat.id }}">Les commentaires sur {{ cat.name }}, c'est par là.</router-link>
     </div>
 </template>
 
 <script>
 import { store } from '../store'
+import { Meteor } from 'meteor/meteor'
+import { Cats } from '../../lib/collections'
 export default {
     name: 'CatComment',
     props: {
-        thiscat: Object
+        cat: Object
     },
     store,
     methods: {
         setComment(event) {
             let comment = this.$refs.inputComment.value
             console.log(comment)
-            let com = {}
-            com.id = this.thiscat.id
-            com.comment = comment
-            console.log(com)
-            this.$store.commit('addComment', com)
-            console.log('COMMIT COMMENT', com)
-            comment = ''
+            //let com = {}
+            //com.id = this.cat.id
+            //com.comment = comment
+            //console.log(com)
+            let id = this.cat.id 
+            Meteor.call('insertComment', comment, id)
+            //this.$store.commit('addComment', com)
+            //console.log('COMMIT COMMENT', com)
+            this.$refs.inputComment.value = ''
         }
         
     }
