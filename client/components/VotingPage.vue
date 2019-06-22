@@ -14,6 +14,7 @@
 import BeautyCat from './BeautyCat.vue'
 import CatFavorites from './CatFavorites'
 import { store } from '../store.js'
+import { Cats } from '../../lib/collections'
 export default {
     data(){
         return {
@@ -21,6 +22,15 @@ export default {
         }
     },
     store,
+    meteor: {
+        $subscribe: {
+            'cats': []
+        },
+        cats() {
+            return Cats.find({})
+        },  
+        
+    },
     methods: {
         setNewCats: function(){
         this.random = []
@@ -36,8 +46,8 @@ export default {
         },
         modifyScore: function(side){
             console.log(side)
-            let winner = side === 'left' ? this.$store.state.cats[this.random[0]] : this.$store.state.cats[this.random[1]]
-            let looser = winner.id === this.random[0] ? this.$store.state.cats[this.random[1]] : this.$store.state.cats[this.random[0]]
+            let winner = side === 'left' ? this.cats[this.random[0]] : this.cats[this.random[1]]
+            let looser = winner.id === this.random[0] ? this.cats[this.random[1]] : this.cats[this.random[0]]
             console.log('WINNER:', winner)
             this.setNewScores(winner, looser)
             this.setNewCats()
@@ -101,13 +111,16 @@ export default {
         //console.log('BEFORE COMMIT', indexW, scoreW)
         console.log('BEFORE COMMIT', winner.name, scoreW)
         console.log('BEFORE COMMIT II', looser.name, scoreL)
-        let newScores = {}
+
+        Meteor.call('updateScore', scoreW, winner.id)
+        Meteor.call('updateScore', scoreL, looser.id)
+        /*let newScores = {}
         newScores.indexW = winner.id
         newScores.scoreW = scoreW
         newScores.indexL = looser.id
         newScores.scoreL = scoreL
         console.log('NEWSCORES', newScores)
-        return this.$store.commit('updateScores', newScores)
+        return this.$store.commit('updateScores', newScores)  */
         //this.$emit('newGame')
 
         }

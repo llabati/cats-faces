@@ -15,30 +15,36 @@
 </template>
 
 <script>
-import { store } from '../store.js'
+//import { store } from '../store.js'
+import { Cats } from '../../lib/collections'
 export default {
     name: 'Cat',
-    store,
+    //store,
     data(){
         return {
-
             id: this.$route.params.id
         }
     },
+    meteor: {
+        $subscribe: {
+            //'this-cat': [],
+            'cats': []
+        },
+        cats() {
+            return Cats.find({})
+        },  
+        
+    },
+
     computed: {
-        cat(id) {
-            return this.$store.state.cats[this.id];
+        cat() {
+            return this.cats[this.id];
         },
         comments(){
             return this.cat.comments;
         }
     },
-    created(){
-        console.log(this.cat)
-    },
-    mounted(){
-        console.log('MOUNTED', this.cat.id, this.cat.name, this.cat.comments)
-    }
+    
     
 }
 </script>

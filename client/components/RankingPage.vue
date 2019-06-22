@@ -6,7 +6,7 @@
             </div>
             <div class="card-body">
                 <ol class="list-group">
-                    <li class="list-group-item container" v-for="cat in sortedCats" :key="cat.id">
+                    <li class="list-group-item container" v-for="cat in cats" :key="cat.id">
                         <div class="row">
                             <div class="col-4"><strong>{{ cat.name }}</strong></div>
                             <div class="col-4"><img class="thumbnail" style="max-width: 25%" :src="cat.pic"> </div>
@@ -28,7 +28,7 @@ import { Cats } from '../../lib/collections'
 export default {
     data(){
         return {
-            cats: []
+            //cats: []
         }
     },
     meteor: {
@@ -42,12 +42,12 @@ export default {
         }
 
     },
-    computed:{
+    /*computed:{
         sortedCats(){
             let allCats = this.$store.state.cats
             return allCats.sort((a,b) => b.score - a.score)
         }
-    }
+    }*/
 }
 </script>
 
