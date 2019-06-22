@@ -63,7 +63,8 @@ export default {
             console.log('BEAUTYCAT has-voted')
             this.win = !this.win
             let indexW = this.currentCat
-            this.$store.commit('updateTotal')
+            this.$store.commit('updateTotal', indexW)
+            //this.$store.commit('updateLikes', indexW)
             let newVote = this.cat.votes
             newVote++
             console.log('THIS-CURRENTCAT BEFORE MONGO', this.currentCat, newVote)

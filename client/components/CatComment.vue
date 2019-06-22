@@ -34,17 +34,13 @@ export default {
         setComment(event) {
             let comment = this.$refs.inputComment.value
             console.log(comment)
-            //let com = {}
-            //com.id = this.cat.id
-            //com.comment = comment
-            //console.log(com)
+
             let id = this.cat.id 
             
             this.coms.push(comment)
             console.log(this.coms)
             Meteor.call('insertComment', this.coms, id)
-            //this.$store.commit('addComment', com)
-            //console.log('COMMIT COMMENT', com)
+
             this.$refs.inputComment.value = ''
         }
        

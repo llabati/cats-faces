@@ -28,6 +28,8 @@
     </div>
 </template>
 <script>
+import { Meteor } from 'meteor/meteor'
+import { Cats } from '../../lib/collections'
 export default {
     name: 'CatFavorites',
     props: {
@@ -40,11 +42,20 @@ export default {
             clicked: 0
         }
     },
+        meteor: {
+        $subscribe: {
+            'cats': []
+        },
+        allCats(){
+            return Cats.find({})
+        }
+
+    },
     computed: {
         favorites: {
             get: function(){
                 let cats = this.$store.state.cats
-                return this.favorites = cats.filter( a => a.votes >= 10 ).sort((a,b) => b.votes - a.votes)
+                return this.favorites = cats.filter( a => a.likes >= 10 ).sort((a,b) => b.likes - a.likes)
             },
             set: function(){
                 //let cats = this.$store.state.cats
@@ -58,9 +69,15 @@ export default {
       console.log(fav)
       let chosen = this.favorites.find(f => f.name === fav)
       console.log(this.favorites)
-      console.log(chosen)
-      chosen.score += 200
-      console.log(chosen)
+      console.log('CHOSEN', chosen)
+      let chosenId = chosen.id
+      console.log(chosenId)
+      let chosenCat = this.allCats.find( a => a.id = chosenId)
+      console.log('CHOSENCAT', chosenCat)
+      let newScore = chosenCat.score 
+      newScore += 200
+      console.log('newScore for favorite', newScore)
+      Meteor.call('updateScore', newScore, chosenId)
       this.clicked++;
         }
     } 
