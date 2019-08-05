@@ -29,13 +29,10 @@ export default {
     data(){
         return {
             win: false,
-            //thisCat: {},
-            //cats: []
         }
     },
     meteor: {
         $subscribe: {
-            //'this-cat': [],
             'cats': []
         },
         cats() {
@@ -46,10 +43,7 @@ export default {
 
     computed: {
         cat(){
-           // console.log( 'BEFORE CAT', this.cats)
            return this.cats[this.currentCat]
-            
-            
         }
 
     }, 
@@ -57,22 +51,20 @@ export default {
         win(){
             this.$emit('score')
         }
-    },
+    },/*
     methods: {
         setVote(){
             console.log('BEAUTYCAT has-voted')
             this.win = !this.win
             let indexW = this.currentCat
             this.$store.commit('updateTotal', indexW)
-            //this.$store.commit('updateLikes', indexW)
             let newVote = this.cat.votes
             newVote++
             console.log('THIS-CURRENTCAT BEFORE MONGO', this.currentCat, newVote)
             Meteor.call('updateVotes', this.currentCat, newVote)
-            //this.$store.commit('updateVote', this.currentCat)
         }
         
-    },
+    },*/
     components: {
         CatComment,
         CatVote

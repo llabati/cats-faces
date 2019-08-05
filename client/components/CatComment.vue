@@ -6,7 +6,7 @@
                 <button class="btn btn-outline-secondary" v-on:click="setComment">Postez</button>
             </div>
         </div>
-        <router-link class="my-3" style="text-decoration: none; cursor: pointer;" v-bind:to="{ name: 'cat', params: { id: cat.id }}">Les commentaires sur {{ cat.name }}, c'est par là.</router-link>
+        <router-link class="my-3" style="text-decoration: none; cursor: pointer;" v-bind:to="{ name: 'cat', params: { name: cat.name }}">Les commentaires sur {{ cat.name }}, c'est par là.</router-link>
     </div>
 </template>
 
@@ -22,7 +22,7 @@ export default {
     store,
     data(){
         return {
-            //coms: []
+
         }
     },
     computed: {
@@ -35,11 +35,11 @@ export default {
             let comment = this.$refs.inputComment.value
             console.log(comment)
 
-            let id = this.cat.id 
+            let name = this.cat.name 
             
             this.coms.push(comment)
             console.log(this.coms)
-            Meteor.call('insertComment', this.coms, id)
+            Meteor.call('insertComment', this.coms, name)
 
             this.$refs.inputComment.value = ''
         }

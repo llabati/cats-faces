@@ -33,96 +33,80 @@ export default {
     },
     methods: {
         setNewCats: function(){
+        let len = this.$store.state.cats.length
         this.random = []
-        let left = Math.floor(Math.random() * 25)
+        let left = Math.floor(Math.random() * len)
         this.random.push(left)
-        //this.random.push(this.$store.state.cats[left])
-        let right = Math.floor(Math.random() * 25)
-        if (right === left) right = Math.floor(Math.random() * 25)
+        let right = Math.floor(Math.random() * len)
+        if (right === left) right = Math.floor(Math.random() * len)
         this.random.push(right)
-        //this.random.push(this.$store.state.cats[right])
-        console.log(this.random)
+        console.log('RANDOM', this.random)
         return this.random
         },
         modifyScore: function(side){
             console.log(side)
             let winner = side === 'left' ? this.cats[this.random[0]] : this.cats[this.random[1]]
-            let looser = winner.id === this.random[0] ? this.cats[this.random[1]] : this.cats[this.random[0]]
+            let looser = side === 'left' ? this.cats[this.random[1]] : this.cats[this.random[0]]
             console.log('WINNER:', winner)
+            console.log('LOOSER:', looser)
             this.setNewScores(winner, looser)
+            this.setVotes(winner)
             this.setNewCats()
         },
         setNewScores: function(winner, looser){
         
-        /*if (this.vote === 'left'){
-            console.log(this.vote)
-            this.winner = this.competitors[0];
-            console.log(this.winner)
-            this.looser = this.competitors[1];
-        } if(this.vote === 'right') {
-            this.winner = this.competitors[1];
-            this.looser = this.competitors[0];
-        } 
-        let indexW = this.winner.id 
-        console.log(indexW)
-        let indexL = this.looser.id
-        //this.$store.commit('updateVote', indexW)
-*/
+            let scoreW = winner.score
+            console.log('WINNER S SCORE', scoreW)
+            let scoreL = looser.score
+            console.log('LOOSER S SCORE', scoreL)
 
-        let scoreW = winner.score
-        console.log('WINNER S SCORE', scoreW)
-        let scoreL = looser.score
-
-        if (winner.votes < 20 || looser.votes < 20){
-            scoreW += 100;
-            scoreL -= 50;
-            console.log('NEW SCORE:', scoreW)
-        }
-        else {
-        let diff = scoreW - scoreL;
-        console.log('DIFF:', diff)
-
-
-        if (diff === 0) {
-            scoreW += 100;
-            scoreL -= 50;
-        }
-        if (diff > 0) {
-            if (diff < scoreW / 2) {
-                scoreW += diff;
-                scoreL -= diff;
+            if (winner.votes < 20 || looser.votes < 20){
+                scoreW += 100;
+                scoreL -= 50;
+                console.log('NEW SCORE:', scoreW)
             }
-            if (diff > scoreW / 2) {
-                scoreW += Math.floor(diff / 2);
-                scoreL -= Math.floor(diff / 2);
-            }
-        }
-        if (diff < 0) {
-            if (diff < Math.abs(scoreW) / 2) {
-                scoreW += Math.floor(diff / 2);
-                scoreL -= Math.floor(diff / 2);
-            }
-            if (diff > Math.abs(scoreW) / 2) {
-                scoreW += 2 * diff;
-                scoreL -= 2 * diff;
-            }           
-        }
-        }
-        //console.log('BEFORE COMMIT', indexW, scoreW)
-        console.log('BEFORE COMMIT', winner.name, scoreW)
-        console.log('BEFORE COMMIT II', looser.name, scoreL)
+            else {
+            let diff = scoreW - scoreL;
+            console.log('DIFF:', diff)
 
-        Meteor.call('updateScore', scoreW, winner.id)
-        Meteor.call('updateScore', scoreL, looser.id)
-        /*let newScores = {}
-        newScores.indexW = winner.id
-        newScores.scoreW = scoreW
-        newScores.indexL = looser.id
-        newScores.scoreL = scoreL
-        console.log('NEWSCORES', newScores)
-        return this.$store.commit('updateScores', newScores)  */
-        //this.$emit('newGame')
 
+            if (diff === 0) {
+                scoreW += 100;
+                scoreL -= 50;
+            }
+            if (diff > 0) {
+                if (diff < scoreW / 2) {
+                    scoreW += diff;
+                    scoreL -= diff;
+                }
+                if (diff > scoreW / 2) {
+                    scoreW += Math.floor(diff / 2);
+                    scoreL -= Math.floor(diff / 2);
+                }
+            }
+            if (diff < 0) {
+                if (diff < Math.abs(scoreW) / 2) {
+                    scoreW += Math.floor(diff / 2);
+                    scoreL -= Math.floor(diff / 2);
+                }
+                if (diff > Math.abs(scoreW) / 2) {
+                    scoreW += 2 * diff;
+                    scoreL -= 2 * diff;
+                    }           
+                }
+            }
+            
+            console.log('BEFORE COMMIT', winner.name, scoreW)
+            console.log('BEFORE COMMIT II', looser.name, scoreL)
+
+            Meteor.call('updateScore', scoreW, winner.name)
+            Meteor.call('updateScore', scoreL, looser.name)
+
+        },
+        setVotes(winner){
+            let winVotes = winner.votes
+            winVotes++
+            Meteor.call('updateVotes', winner, winVotes)
         }
 
     },

@@ -3,7 +3,10 @@
 
         <section>
             <h1 class="display-4 text-center text-info">{{ cat.name }}</h1>
-            <img class="card-img-top" :src="cat.pic">
+            <div class="col-6 offset-3">
+                <img :src="pic" :alt="cat.name"/>
+                
+            </div>
         </section>
         <section class="card-body">
             <h2 id="com" class="display-5 text-center text-muted">Tous les commentaires sur ce chat</h2>
@@ -11,23 +14,23 @@
                 <li v-for="comment in comments" :key="comment.id" class="list-group-item">{{ comment }}</li>
             </ul>
         </section>
+        <div class="card-footer">
+                <button class="btn btn-info float-right" @click="$router.push('/')">Continuer à voter</button>
+        </div>
     </div>
 </template>
 
 <script>
-//import { store } from '../store.js'
 import { Cats } from '../../lib/collections'
 export default {
     name: 'Cat',
-    //store,
     data(){
         return {
-            id: this.$route.params.id
+            name: this.$route.params.name
         }
     },
     meteor: {
         $subscribe: {
-            //'this-cat': [],
             'cats': []
         },
         cats() {
@@ -38,10 +41,13 @@ export default {
 
     computed: {
         cat() {
-            return this.cats[this.id];
+            return this.cats.find(c => c.name === this.name)
         },
         comments(){
             return this.cat.comments;
+        },
+        pic(){
+            return `public/${this.cat.pic}`
         }
     },
     

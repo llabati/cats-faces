@@ -13,9 +13,9 @@
                     </div>
                     <div class="card-body">
                         <ol class="list-group">
-                            <li v-for="favorite in favorites" :key="favorite.id" class="list-group-item" style="line-height: 2;">
-                                <img class="img-thumbnail float-left" style="max-width: 20%; margin-right: 5%;" :src="favorite.pic">
-                                <p v-if="clicked <= 3" style="cursor: pointer" v-on:click="backMyFavorite">{{ bonus }}{{ favorite.name }}</p>
+                            <li v-for="favorite in favorites" :key="favorite.id" class="list-group-item" style="line-height: 2;" v-on:click="backMyFavorite(favorite)">
+                                
+                                <p v-if="clicked <= 3" style="cursor: pointer">{{ bonus }}{{ favorite.name }}<img class="float-right" :src="favorite.pic"/></p>
                                 <p v-else class="text-muted">{{ favorite.name }}<br>{{ overreach }}</p>
                             </li>   
                         </ol> 
@@ -64,21 +64,18 @@ export default {
         } 
     }, 
     methods: {
-    backMyFavorite(event){
-      let fav = event.target.innerHTML.substr(39)
+    backMyFavorite(favorite){
+        console.log('favorite', favorite)
+      let fav = favorite.name
       console.log(fav)
-      let chosen = this.favorites.find(f => f.name === fav)
-      console.log(this.favorites)
-      console.log('CHOSEN', chosen)
-      let chosenId = chosen.id
-      console.log(chosenId)
-      let chosenCat = this.allCats.find( a => a.id = chosenId)
+      
+      let chosenCat = this.allCats.find( a => a.name = fav)
       console.log('CHOSENCAT', chosenCat)
-      let newScore = chosenCat.score 
-      newScore += 200
-      console.log('newScore for favorite', newScore)
-      Meteor.call('updateScore', newScore, chosenId)
-      this.clicked++;
+      let currentScore = chosenCat.score 
+      currentScore += 200
+      console.log('newScore for favorite', currentScore)
+      Meteor.call('updateScore', currentScore, chosenCat.name)
+      this.clicked++; 
         }
     } 
 }

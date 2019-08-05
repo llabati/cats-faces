@@ -10,7 +10,7 @@ Vue.use(VueRouter)
 const routes = [
     { path: '/', name:'voting', component: VotingPage },
     { path: '/rank', name: 'ranking', component: RankingPage },
-    { path: '/cat/:id', name: 'cat', component: CatPage }
+    { path: '/cat/:name', name: 'cat', component: CatPage }
 ]
 
 const router = new VueRouter({

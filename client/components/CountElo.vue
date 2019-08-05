@@ -21,11 +21,6 @@ export default {
             scoreL: 0
         }
     },
-    /*watch: {
-        newVote(){
-            return this.countELO()
-        }
-    },*/
     methods: {
         countELO: function(competitors, vote){
         
@@ -84,7 +79,6 @@ export default {
             }           
         }
         }
-        //console.log('BEFORE COMMIT', indexW, scoreW)
         console.log('BEFORE COMMIT', indexW, this.scoreW)
         let newScores = {}
         newScores.indexW = indexW
