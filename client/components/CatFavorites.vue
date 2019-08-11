@@ -1,7 +1,7 @@
 <template>
     <div id="fav">
         <section v-if="favorites.length === 0" class="col-6 offset-3">
-                    <p class="lead text-center">Vous n'avez pas encore de favoris. Il faut 10 votes en faveur d'un chat pour qu'il en devienne un.</p>
+                    <p class="lead text-center">{{ welcome }}, vous n'avez pas encore de favoris. Il faut 10 votes en faveur d'un chat pour qu'il en devienne un.</p>
                     <p id="limit" class="text-center">Vous avez le droit de favoriser 3 chats parmi vos favoris. Donnez-leur 200 points !</p>
         </section>
         <section v-else>
@@ -33,7 +33,8 @@ import { Cats } from '../../lib/collections'
 export default {
     name: 'CatFavorites',
     props: {
-        cats: Array
+        cats: Array,
+        welcome: String
     },
     data(){
         return {
@@ -42,20 +43,14 @@ export default {
             clicked: 0
         }
     },
-        meteor: {
-        $subscribe: {
-            'cats': []
-        },
-        allCats(){
-            return Cats.find({})
-        }
-
-    },
     computed: {
+        myCats(){
+            return this.$store.state.cats
+        },
         favorites: {
             get: function(){
-                let cats = this.$store.state.cats
-                return this.favorites = cats.filter( a => a.likes >= 10 ).sort((a,b) => b.likes - a.likes)
+                
+                return this.favorites = this.myCats.filter( a => a.likes >= 5 ).sort((a,b) => b.likes - a.likes)
             },
             set: function(){
                 //let cats = this.$store.state.cats
@@ -67,17 +62,12 @@ export default {
     backMyFavorite(favorite){
         console.log('favorite', favorite)
       let fav = favorite.name
-      console.log(fav)
       
-      let chosenCat = this.allCats.find( a => a.name = fav)
-      console.log('CHOSENCAT', chosenCat)
-      let currentScore = chosenCat.score 
-      currentScore += 200
-      console.log('newScore for favorite', currentScore)
-      Meteor.call('updateScore', currentScore, chosenCat.name)
+      Meteor.call('updateScore', fav)
       this.clicked++; 
         }
     } 
 }
 </script>
+
 
