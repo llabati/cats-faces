@@ -34,24 +34,31 @@ const state = {
         { name: 'VACANCES', likes: 0  },
         { name: 'DIANE', likes: 0  },
         ],
-
-
-
+        currentHuman: '',
+        author: ''
 }
 
 const getters = {
     
 }
 const mutations = {
+    NAME_CURRENT_HUMAN: (state, newHuman) => {
+        state.currentHuman = newHuman.split(' ')[0]
+        state.author = newHuman
+    },
     
-    updateTotal: (state, indexW) => {
-        state.total++,
-        state.cats[indexW].likes++ }
+    UPDATE_TOTAL: (state, winning) => {
+        state.total++
+        let winnerCat = state.cats.find(c => c.name === winning)
+        winnerCat.likes++
+        }
 
 }
 
 const actions = {
-    
+    nameCurrentHuman: (context, newHuman) => {
+        context.commit('NAME_CURRENT_HUMAN', newHuman)
+    }
 }
 
 
