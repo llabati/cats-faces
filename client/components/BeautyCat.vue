@@ -17,54 +17,37 @@
 import CatComment from './CatComment.vue'
 import CatVote from './CatVote.vue'
 import { store } from '../store'
-import { Cats } from '../../lib/collections'
+//import { Cats } from '../../lib/collections'
+//import { Humans } from '../../lib/collections'
 export default {
     name: 'BeautyCat',
     props: {
-        side: String,
-        currentCat: Number
+        left: Boolean,
+        cat: Object
+
+    },
+    data(){
+        return {
+            
+        }
     },
     store,
     
-    data(){
-        return {
-            win: false,
-        }
-    },
-    meteor: {
-        $subscribe: {
-            'cats': []
-        },
-        cats() {
-            return Cats.find({})
-        },  
-        
-    },
-
-    computed: {
-        cat(){
-           return this.cats[this.currentCat]
-        }
-
-    }, 
-    watch: {
-        win(){
-            this.$emit('score')
-        }
-    },/*
     methods: {
         setVote(){
             console.log('BEAUTYCAT has-voted')
-            this.win = !this.win
-            let indexW = this.currentCat
-            this.$store.commit('updateTotal', indexW)
+            console.log('this currentcat', this.cat)
+            let winning = this.cat.name
+            this.$store.commit('UPDATE_TOTAL', winning)
+            
             let newVote = this.cat.votes
             newVote++
-            console.log('THIS-CURRENTCAT BEFORE MONGO', this.currentCat, newVote)
-            Meteor.call('updateVotes', this.currentCat, newVote)
+            console.log('THIS-CURRENTCAT BEFORE MONGO', this.cat, newVote)
+            Meteor.call('updateVotes', this.cat, newVote)
+            this.$emit('score')
         }
         
-    },*/
+    },
     components: {
         CatComment,
         CatVote
