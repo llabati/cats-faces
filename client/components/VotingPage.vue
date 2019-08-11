@@ -1,11 +1,14 @@
 <template>
     <div class="container col-10 mb-20 bg-white" id="voting">
-        <section id="two-cats" class="row d-flex justify-content-between">
-            <beauty-cat :currentCat="random[0]" v-on:score="modifyScore('left')"></beauty-cat>
-            <beauty-cat :currentCat="random[1]" v-on:score="modifyScore('right')"></beauty-cat>
+        <section class="col-2 offset-5">
+            <button id="launch" class="btn btn-outline text-info" @click="setNewCats" v-if="!clicked">Lancer le match !</button>
+        </section>
+        <section id="two-cats" class="row d-flex justify-content-between" v-if="clicked">
+            <beauty-cat :cat="leftCat" :left="true" v-on:score="modifyScore('left')"></beauty-cat>
+            <beauty-cat :cat="rightCat" :left="false" v-on:score="modifyScore('right')"></beauty-cat>
         </section>
         <section id="favorites">
-            <cat-favorites></cat-favorites>
+            <cat-favorites :welcome="currentVisitor"></cat-favorites>
         </section>
     </div>
 </template>
@@ -15,42 +18,58 @@ import BeautyCat from './BeautyCat.vue'
 import CatFavorites from './CatFavorites'
 import { store } from '../store.js'
 import { Cats } from '../../lib/collections'
+import { Humans } from '../../lib/collections'
 export default {
     data(){
         return {
-            random: []
+            random: [],
+            left: Boolean,
+            leftCat: {},
+            rightCat: {},
+            clicked: false
         }
+    },
+    computed: {
+        currentVisitor(){
+            return this.$store.state.currentHuman
+        },
     },
     store,
     meteor: {
         $subscribe: {
-            'cats': []
+            'cats': [],
+            'humans': [],
         },
         cats() {
             return Cats.find({})
-        },  
+        }, 
+        humans(){
+            return Humans.find({})
+        },
         
     },
     methods: {
         setNewCats: function(){
-        let len = this.$store.state.cats.length
-        this.random = []
-        let left = Math.floor(Math.random() * len)
-        this.random.push(left)
-        let right = Math.floor(Math.random() * len)
-        if (right === left) right = Math.floor(Math.random() * len)
-        this.random.push(right)
-        console.log('RANDOM', this.random)
-        return this.random
+            let len = this.cats.length
+            let leftIndex = Math.floor(Math.random() * len)
+            this.leftCat = this.cats[leftIndex]
+            console.log('LEFTCAT', this.leftCat)
+            let rightIndex = Math.floor(Math.random() * len)
+            this.rightCat = this.cats[rightIndex]
+            if (rightIndex === leftIndex) return setNewCats()
+            else {
+                this.clicked = true
+                return { leftCat, rightCat }
+            }
+
         },
         modifyScore: function(side){
             console.log(side)
-            let winner = side === 'left' ? this.cats[this.random[0]] : this.cats[this.random[1]]
-            let looser = side === 'left' ? this.cats[this.random[1]] : this.cats[this.random[0]]
+            let winner = side === 'left' ? this.leftCat : this.rightCat
+            let looser = winner === this.leftCat ? this.rightCat : this.leftCat
             console.log('WINNER:', winner)
             console.log('LOOSER:', looser)
             this.setNewScores(winner, looser)
-            this.setVotes(winner)
             this.setNewCats()
         },
         setNewScores: function(winner, looser){
@@ -103,15 +122,6 @@ export default {
             Meteor.call('updateScore', scoreL, looser.name)
 
         },
-        setVotes(winner){
-            let winVotes = winner.votes
-            winVotes++
-            Meteor.call('updateVotes', winner, winVotes)
-        }
-
-    },
-    created(){
-        return this.setNewCats()
     },
     
     components: {
@@ -125,6 +135,10 @@ export default {
     #voting {
         padding: 20px;
         border: solid 5px blue;
+    }
+    #launch {
+        border: solid 3px #17a2b8;
+        margin: 10px auto;
     }
 </style>
 
