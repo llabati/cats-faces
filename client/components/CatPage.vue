@@ -2,26 +2,30 @@
     <div class="card">
 
         <section>
-            <h1 class="display-4 text-center text-info">{{ cat.name }}</h1>
+            <h1 class="display-4 text-center text-info">{{ name }}</h1>
             <div class="col-6 offset-3">
-                <img :src="pic" :alt="cat.name"/>
+                <img :src="`public/${cat.pic}`" :alt="cat.name"/>
                 
             </div>
         </section>
         <section class="card-body">
             <h2 id="com" class="display-5 text-center text-muted">Tous les commentaires sur ce chat</h2>
             <ul class="list-group">
-                <li v-for="comment in comments" :key="comment.id" class="list-group-item">{{ comment }}</li>
+                <li v-for="comment in comments" :key="comment.id" class="list-group-item bg-gray">
+                    <p><strong>{{ comment.author }}</strong></p>
+                    <p class="bg-white">{{ comment.content }}</p>
+                </li>
             </ul>
         </section>
         <div class="card-footer">
-                <button class="btn btn-info float-right" @click="$router.push('/')">Continuer à voter</button>
+                <button class="btn btn-info float-right" @click="$router.push('/vote')">Continuer à voter</button>
         </div>
     </div>
 </template>
 
 <script>
 import { Cats } from '../../lib/collections'
+import { Comments } from '../../lib/collections'
 export default {
     name: 'Cat',
     data(){
@@ -31,24 +35,26 @@ export default {
     },
     meteor: {
         $subscribe: {
-            'cats': []
+            'cats': [],
+            'comments': [],
+            
         },
-        cats() {
+        
+        cats(){
             return Cats.find({})
-        },  
+        },
+        
+        comments(cat){
+            return Comments.find({cat: this.name})
+        },
         
     },
 
     computed: {
-        cat() {
+        cat(name) {
+            console.log(this.cats.find(c => c.name === this.name))
             return this.cats.find(c => c.name === this.name)
         },
-        comments(){
-            return this.cat.comments;
-        },
-        pic(){
-            return `public/${this.cat.pic}`
-        }
     },
     
     
