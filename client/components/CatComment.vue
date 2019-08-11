@@ -14,10 +14,13 @@
 import { store } from '../store'
 import { Meteor } from 'meteor/meteor'
 import { Cats } from '../../lib/collections'
+import { Comments } from '../../lib/collections'
+import { Humans } from '../../lib/collections'
 export default {
     name: 'CatComment',
     props: {
-        cat: Object
+        cat: Object,
+        currentHuman: String
     },
     store,
     data(){
@@ -26,20 +29,17 @@ export default {
         }
     },
     computed: {
-        coms(){
-            return this.cat.comments
-        }
+        
     },
     methods: {
         setComment(event) {
             let comment = this.$refs.inputComment.value
             console.log(comment)
 
-            let name = this.cat.name 
+            let catName = this.cat.name 
+            let humanName = this.$store.state.author
             
-            this.coms.push(comment)
-            console.log(this.coms)
-            Meteor.call('insertComment', this.coms, name)
+            Meteor.call('insertComment', comment, humanName, catName)
 
             this.$refs.inputComment.value = ''
         }
