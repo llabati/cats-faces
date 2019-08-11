@@ -31,8 +31,7 @@ export default {
             
         }
     },
-    store,
-    
+    store,  
     methods: {
         setVote(){
             console.log('BEAUTYCAT has-voted')
