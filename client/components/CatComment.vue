@@ -38,8 +38,9 @@ export default {
 
             let catName = this.cat.name 
             let humanName = this.$store.state.author
+            let date = new Date().toLocaleDateString()
             
-            Meteor.call('insertComment', comment, humanName, catName)
+            Meteor.call('insertComment', comment, humanName, date, catName)
 
             this.$refs.inputComment.value = ''
         }
@@ -52,5 +53,8 @@ export default {
 <style>
 
 </style>
+
+
+
 
 
