@@ -2,7 +2,7 @@
     <div class="card col-6 border border-info rounded-lg col">
         
         <div class="card-body">
-            <img class="img-fluid card-img-top" v-bind:src="cat.pic">  
+            <img class="img-fluid card-img-top" v-bind:src="cat.pic" :alt="cat.name">  
             <p class="lead text-info text-center"><strong>{{ cat.name }}</strong></p>
             <cat-comment :cat="cat"></cat-comment>  
         </div>
@@ -31,7 +31,8 @@ export default {
             
         }
     },
-    store,  
+    store,
+    
     methods: {
         setVote(){
             console.log('BEAUTYCAT has-voted')
